@@ -9,8 +9,9 @@
 // at https://opensource.org/licenses/MIT.
 
 use bytes::Bytes;
-use error::{Error, Result};
+use crate::error::{Error, Result};
 use futures::prelude::*;
+use log::trace;
 use std::{net::{IpAddr, SocketAddr}, time::Duration};
 use tokio_codec::{FramedRead, FramedWrite, BytesCodec};
 use tokio_tcp::TcpStream;

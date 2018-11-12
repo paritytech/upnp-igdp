@@ -13,7 +13,6 @@
 extern crate bytes;
 extern crate futures;
 extern crate httparse;
-#[macro_use]
 extern crate log;
 extern crate roxmltree;
 extern crate tokio_codec;
@@ -28,16 +27,15 @@ mod error;
 mod util;
 mod xml;
 
+use crate::{error::{Error, Result}, util::{SSDP_SEARCH_REQUEST, SERVICE_TYPE}};
 use futures::{future::{self, Either, Loop}, prelude::*};
+use log::{debug, trace};
 use roxmltree::Document;
 use std::{fmt, net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs}, str, time::{Duration, Instant}};
 use tokio_timer::Delay;
 use tokio_udp::UdpSocket;
 use unicase::Ascii;
 use url::Url;
-
-use util::{SSDP_SEARCH_REQUEST, SERVICE_TYPE};
-use error::{Error, Result};
 
 /// Try to get our external IP address form a UPnP WANIPConnection.
 pub fn external_ip<A>(addrs: A) -> impl Future<Item=Option<IpAddr>, Error=Error>
@@ -147,8 +145,8 @@ impl Igdp<()> {
                                     Ok(Loop::Break(result))
                                 }
                                 Either::B((_, recv)) => {
-                                    let (sock, buff) = recv.into_parts();
-                                    Ok(Loop::Continue((i + 1, sock, buff)))
+                                    let parts = recv.into_parts();
+                                    Ok(Loop::Continue((i + 1, parts.socket, parts.buffer)))
                                 }
                             }
                         })

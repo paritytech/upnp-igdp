@@ -14,7 +14,7 @@ tokio-codec = "0.1"
 tokio-io = "0.1"
 tokio-tcp = "0.1"
 tokio-timer = "0.2"
-tokio-udp = "0.1"
+tokio-udp = "0.1.3"
 unicase = "2"
 url = "1"
 
@@ -22,11 +22,3 @@ url = "1"
 env_logger = "0.5"
 tokio = "0.1"
 
-# Temporarily use tokio's master branch.
-[patch.crates-io]
-tokio = { git = "https://github.com/tokio-rs/tokio" }
-tokio-codec = { git = "https://github.com/tokio-rs/tokio" }
-tokio-io = { git = "https://github.com/tokio-rs/tokio" }
-tokio-tcp = { git = "https://github.com/tokio-rs/tokio" }
-tokio-timer = { git = "https://github.com/tokio-rs/tokio" }
-tokio-udp = { git = "https://github.com/tokio-rs/tokio" }

@@ -51,7 +51,7 @@ where
 
 /// Try to create a port mapping for any external host to the given port.
 pub fn port_mapping<A>(addrs: A, p: Protocol, port: u16, dur: Duration, descr: &'static str)
--> impl Future<Item=Option<u16>, Error=Error>
+    -> impl Future<Item=Option<u16>, Error=Error>
 where
     A: ToSocketAddrs
 {
@@ -233,7 +233,7 @@ impl Igdp<Control> {
 
     /// Try to create a port mapping, allowing incoming traffic to reach us at the given port.
     pub fn add_port_mapping(self, proto: Protocol, port: u16, dura: Duration, description: &str)
-    -> impl Future<Item=(Self, Option<u16>), Error=Error>
+        -> impl Future<Item=(Self, Option<u16>), Error=Error>
     {
         let pmap = util::PortMapping {
             protocol: proto,
@@ -246,15 +246,15 @@ impl Igdp<Control> {
         trace!("connecting to {}", self.state.addr);
         util::fetch(self.state.addr, req)
             .and_then(move |bytes| {
-                let mapping = extract_port_mapping(&bytes[..])?;
-                trace!("external port: {:?}", mapping);
+                let port = extract_port_mapping(&bytes[..])?;
+                trace!("external port: {:?}", port);
                 let igdp = Igdp {
                     socket: self.socket,
                     buffer: self.buffer,
                     local: self.local,
                     state: self.state
                 };
-                Ok((igdp, None))
+                Ok((igdp, port))
             })
     }
 }
@@ -324,12 +324,12 @@ fn extract_port_mapping(bytes: &[u8]) -> Result<Option<u16>> {
             let body_string = str::from_utf8(&bytes[n ..])?;
             let document = Document::parse(body_string)?;
             let cursor = xml::Cursor::new(document.root());
-            let ext_ip = cursor
+            let port = cursor
                 .get("Envelope")
                 .get("Body")
                 .get("AddAnyPortMapping")
                 .get("NewReservedPort");
-            Ok(ext_ip.text().and_then(|s| s.parse().ok()))
+            Ok(port.text().and_then(|s| s.parse().ok()))
         }
         httparse::Status::Partial => {
             unimplemented!() // TODO

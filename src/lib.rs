@@ -10,19 +10,6 @@
 
 #![forbid(unsafe_code)]
 
-extern crate bytes;
-extern crate futures;
-extern crate httparse;
-extern crate log;
-extern crate roxmltree;
-extern crate tokio_codec;
-extern crate tokio_io;
-extern crate tokio_tcp;
-extern crate tokio_timer;
-extern crate tokio_udp;
-extern crate unicase;
-extern crate url;
-
 mod error;
 mod util;
 mod xml;
@@ -78,6 +65,7 @@ impl fmt::Display for Protocol {
 }
 
 /// An instance of the IGD protocol.
+#[derive(Debug)]
 pub struct Igdp<T> {
     socket: UdpSocket,
     local: IpAddr,
@@ -86,12 +74,14 @@ pub struct Igdp<T> {
 }
 
 /// `Igdp` state after discovery was successful.
+#[derive(Debug)]
 pub struct Discovery {
     url: Url,
     addr: SocketAddr
 }
 
 /// `Igdp` state after a control URL has been discovered.
+#[derive(Debug)]
 pub struct Control {
     url: Url,
     addr: SocketAddr
